@@ -42,7 +42,7 @@ void loop() {
   Serial.print("set /Humidity to ");
   Serial.println(Firebase.getInt("Humidity"));
 
-//  For Temp
+//  For Temporator
   Firebase.setInt("Temp", i);
   if (Firebase.failed()) {
     Serial.print("set /Temp failed:");
