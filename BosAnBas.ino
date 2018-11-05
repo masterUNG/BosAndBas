@@ -19,6 +19,10 @@
 #define DHTTYPE DHT11           // Define type of sensor 
 #define DHTPIN  D4              // Define connected pin
 
+//About Switch
+#define SWITCHPIN1 D1
+#define BUZZERPIN2 D2
+
 DHT dht(DHTPIN, DHTTYPE, 15);   // Initial DHT sensor
 
 
@@ -44,12 +48,19 @@ void setup() {
   Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
 
   // Start DHT sensor operation
-  dht.begin();                  
+  dht.begin();    
+
+// Config Switch
+  pinMode(SWITCHPIN1, OUTPUT);
+  pinMode(BUZZERPIN2, OUTPUT);
   
 } // Setting
 
 void loop() {
 
+//=======================================
+//Post Value to Firbase
+//=======================================
 // Calculate Humidity and Temp
   float humid = dht.readHumidity();     // Read humidity data
   float temp = dht.readTemperature();   // Read temperature data
@@ -87,6 +98,43 @@ void loop() {
   Serial.println(Firebase.getInt("Temp"));
     
     } // if
+
+//=======================================
+//Get Value From Firbase
+//=======================================
+
+//Explicit
+int alertHumid = 0;  // 0 ==> Safe , 1 ==> Over
+int alertTemp = 0;   // 0 ==> Safe , 1 ==> Over
+int alertBuzzer = 0; // 0 ==> Alert, 1 ==> Silent
+
+  alertHumid = Firebase.getInt("alertHumid");
+  alertTemp = Firebase.getInt("alertTemp");
+
+  Serial.print("alertHumid ==> ");
+  Serial.println(alertHumid);
+  
+  Serial.print("alertTemp ==> ");
+  Serial.println(alertTemp);
+
+//  Check Status
+    
+
+    if ((alertTemp == 1) || (alertHumid == 1)) {
+
+//      Alert Status
+        digitalWrite(SWITCHPIN1, 1);
+        digitalWrite(BUZZERPIN2, 0);
+      
+      } else {
+
+//        Normal Status
+        digitalWrite(SWITCHPIN1, 0);
+        digitalWrite(BUZZERPIN2, 1);
+        
+        }
+    
+    
 
   delay(500);
 }
