@@ -1,3 +1,5 @@
+#include <DHT.h>
+
 #include <ESP8266WiFi.h>
 #include <FirebaseArduino.h>
 
@@ -8,6 +10,13 @@
 // Config connect WiFi
 #define WIFI_SSID "MastreEWTC_2.4G"
 #define WIFI_PASSWORD "12345abcde"
+
+//About DHT11
+//#include <DHT.h>                // Include DHT sensor library
+#define DHTTYPE DHT11           // Define type of sensor 
+#define DHTPIN  D4              // Define connected pin
+
+DHT dht(DHTPIN, DHTTYPE, 15);   // Initial DHT sensor
 
 int i = 0;
 
