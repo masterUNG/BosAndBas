@@ -21,6 +21,7 @@ DHT dht(DHTPIN, DHTTYPE, 15);   // Initial DHT sensor
 int i = 0;
 
 void setup() {
+  
   Serial.begin(9600);
 
   WiFi.mode(WIFI_STA);
@@ -37,12 +38,23 @@ void setup() {
   Serial.println(WiFi.localIP());
 
   Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
+
+  dht.begin();                  // Start DHT sensor operation
+  
 }
 
 void loop() {
 
+  float humid = dht.readHumidity();     // Read humidity data
+  float temp = dht.readTemperature();   // Read temperature data
+  Serial.print("Humidity = ");       // Send string to serial port.
+  Serial.print(humid);            // Send analog value to serial port.
+  Serial.print(" Temperature = ");       // Send string to serial port.
+  Serial.println(temp);            // Send analog value to serial port.
+  delay(300);
+
 //  For Humidity
-  Firebase.setInt("Humidity", i);
+  Firebase.setInt("Humidity", humid);
   if (Firebase.failed()) {
     Serial.print("set /Humidity failed:");
     Serial.println(Firebase.error());
@@ -52,7 +64,7 @@ void loop() {
   Serial.println(Firebase.getInt("Humidity"));
 
 //  For Temporator
-  Firebase.setInt("Temp", i);
+  Firebase.setInt("Temp", temp);
   if (Firebase.failed()) {
     Serial.print("set /Temp failed:");
     Serial.println(Firebase.error());
